@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>カテゴリー登録</title>
+</head>
+<body>
+
+<h1>カテゴリー登録</h1>
+
+<form action="/addCategory" method="post">
+
+<input type="text" name="category" placeholder="カテゴリーを入力">
+
+<p th:text="${message}" style=color:red;></p>
+
+<p>
+<input type="submit" value="戻る" formaction="/backCategoryPage">
+<input type="submit" value="登録" formaction="/doAddCategory">
+</p>
+
+</form>
+
+</body>
+</html>

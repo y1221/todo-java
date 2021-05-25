@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>share</title>
+<link th:href="@{todo.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<header>
+    <div class="hamburger-menu">
+        <input type="checkbox" id="menu-btn-check">
+        <label for="menu-btn-check" class="menu-btn"><span></span></label>
+        <!--ここからメニュー-->
+        <div class="menu-content">
+        	<form action="/back" method="post">
+			<p><input type="submit" value="マイタスクへ" class="change"></p>
+			</form>
+			<br>
+			<ul>
+				<li>
+                    <a th:href="'/category/' + 0">全て</a>
+                </li>
+                <li th:each="c:${session.categories}">
+                    <a th:href="'/category/' + ${c.code}" th:text="${c.category}" th:selected="${selectCode == c.code}"></a>
+                </li>
+            </ul>
+        </div>
+        <!--ここまでメニュー-->
+    </div>
+</header>
+
+<h1>みんなのタスク</h1>
+
+<form action="/back" method="post" style="display:inline-block; padding-left:10px">
+<input type="submit" value="マイタスクへ">
+</form>
+
+<p>
+<span th:text="${session.name}"></span>さんがログイン中
+<a href="/logout">ログアウト</a>
+</p>
+
+<form action="/sortShare" method="post">
+<input type="radio" name="sort" value="t" th:checked="${session.sort.equals('t')}">登録順
+<input type="radio" name="sort" value="s" th:checked="${session.sort.equals('s')}">締め切り順
+<input type="submit" value="ソート">
+</form>
+
+<table border="1">
+<tr>
+<th>名前</th><th>タスク</th><th>締め切り</th><th>残り時間</th>
+</tr>
+<tr th:each="t:${tasks}">
+<td th:text="${t.name}"></td>
+<td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" style="text-decoration:none; color:black"></a></td>
+<td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
+<td>-</td>
+</tr>
+</table>
+
+</body>
+</html>

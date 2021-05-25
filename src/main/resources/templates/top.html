@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>トップ</title>
+<link th:href="@{/todo.css}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<header>
+    <div class="hamburger-menu">
+        <input type="checkbox" id="menu-btn-check">
+        <label for="menu-btn-check" class="menu-btn"><span></span></label>
+        <!--ここからメニュー-->
+        <div class="menu-content">
+        	<form action="/shareTask" method="post">
+			<p><input type="submit" value="みんなのタスクへ" class="change"></p>
+			</form>
+			<br>
+			<ul>
+				<li>
+                    <a th:href="'/category/' + 0">全て</a>
+                </li>
+                <li th:each="c:${session.categories}">
+                    <a th:href="'/category/' + ${c.code}" th:text="${c.category}" th:selected="${selectCode == c.code}"></a>
+                </li>
+            </ul>
+        </div>
+        <!--ここまでメニュー-->
+    </div>
+</header>
+
+<h1>マイタスク</h1>
+
+<p>
+<span th:text="${session.name}"></span>さんがログイン中
+<a href="/logout">ログアウト</a>
+</p>
+
+<form action="/category" method="post">
+<p>
+<select name="category">
+<option value=0>全て</option>
+<option th:each="c:${session.categories}" th:value="${c.code}" th:text="${c.category}" 
+th:selected="${selectCode == c.code}"></option>
+</select>
+<input type="submit" value="カテゴリーを変更">
+</p>
+</form>
+
+<form action="/add" method="post">
+<p>
+<input type="submit" value="✙">
+</p>
+</form>
+
+<th:block th:if="${session.category == 0}">
+<h3 th:text="全て"></h3>
+</th:block>
+<th:block th:unless="${session.category == 0}">
+<h3 th:text="${session.selectCategory}"></h3>
+</th:block>
+
+<form action="/sort" method="post">
+<input type="radio" name="sort" value="t" th:checked="${session.sort.equals('t')}">登録順
+<input type="radio" name="sort" value="s" th:checked="${session.sort.equals('s')}">締め切り順
+<input type="submit" value="ソート">
+</form>
+
+<table border="1">
+<tr>
+<th></th><th>タスク</th><th>締め切り</th><th>残り時間</th><th>公開</th>
+</tr>
+<tr th:each="t:${session.tasks}">
+<td>
+<form th:action="'/done/' + ${t.code}" method="post">
+<input type="submit" value="完了">
+</form>
+</td>
+<td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" class="task"></a></td>
+<td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
+<td>-</td>
+<td>
+<th:block th:if="${t.share.equals('1')}">
+<span th:text="公開中"></span>
+</th:block>
+<th:block th:unless="${t.share.equals('1')}">
+<span th:text="非公開"></span>
+</th:block>
+</td>
+</tr>
+</table>
+
+<hr>
+
+<h3>完了したタスク</h3>
+
+<table border="1">
+<tr><th></th><th>タスク</th><th>締め切り</th>
+</tr>
+<tr th:each="t:${session.doneTasks}">
+<td>
+<form th:action="'/done/' + ${t.code}" method="post">
+<input type="submit" value="未完了">
+</form>
+</td>
+<td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" class="task"></a></td>
+<td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
+</tr>
+</table>
+</body>
+</html>

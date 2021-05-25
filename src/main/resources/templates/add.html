@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>タスク登録</title>
+</head>
+<body>
+
+<h1>タスク登録</h1>
+
+<form method="post">
+
+<h3>
+<input type="text" name="task" placeholder="タスクを入力" th:value="${task}">
+</h3>
+
+締め切り
+<select name="year">
+<option th:each="y:${session.years}" th:value="${y}" th:text="${y} + '年'" th:selected="${year == y}"></option>
+</select>
+<select name="month">
+<option th:each="i:${#numbers.sequence(1, 12)}" th:value="${i}" th:text="${i} + '月'" th:selected="${month == i}"></option>
+</select>
+<select name="day">
+<option th:each="i:${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i} + '日'" th:selected="${day == i}"></option>
+</select>
+<select name="hour">
+<option>時</option>
+<option th:each="i:${#numbers.sequence(1, 24)}" th:value="${i}" th:text="${i} + '時'" th:selected="${hour == i}"></option>
+</select>
+
+<select name="category">
+<option th:each="c:${session.categories}" th:value="${c.code}" th:text="${c.category}" th:selected="${categoryCode == c.code}"></option>
+</select>
+
+<input type="hidden" name="before" value="add">
+<input type="submit" value="カテゴリーを追加" formaction="/addCategory">
+
+<p>
+<input type="checkbox" name="share" value="1" th:checked="${share.equals('1')}">公開する
+</p>
+
+<p>
+<input type="submit" value="戻る" formaction="/back">
+<input type="submit" value="登録" formaction="/doAdd">
+</p>
+
+</form>
+
+<p th:text="${message}" style=color:red;></p>
+
+</body>
+</html>
