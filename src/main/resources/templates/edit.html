@@ -34,7 +34,6 @@
 </select>
 
 <input type="hidden" name="before" value="edit">
-<!-- <input type="hidden" name="beforeCode" th:value="${editTask.code}"> -->
 <input type="submit" value="カテゴリーを追加" formaction="/addCategory">
 
 <p>
@@ -45,8 +44,8 @@
 
 <p>
 <input type="submit" value="戻る" formaction="/back">
-<input type="submit" value="更新" th:formaction="'/update/' + ${code}">
-<input type="submit" value="削除" th:formaction="'/delete/' + ${code}">
+<input type="submit" value="更新" th:formaction="'/update/' + ${session.editCode}">
+<input type="submit" value="削除" th:formaction="'/delete/' + ${session.editCode}">
 </p>
 
 </form>

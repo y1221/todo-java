@@ -3,7 +3,7 @@
 .menu-btn {
     position: fixed;
     top: 10px;
-    right: 10px;
+    left: 10px;
     display: flex;
     height: 60px;
     width: 60px;
@@ -47,8 +47,9 @@
     width: 100%;
     height: 100%;
     position: fixed;
+    overflow-y:scroll;
     top: 0;
-    left: 100%;
+    right: 100%;
     z-index: 80;
     background-color:#7FBFFF;
     transition: all 0.5s;
@@ -69,27 +70,31 @@
     text-decoration: none;
     padding: 9px 15px 10px 0;
     position: relative;
+    text-align:right;
+}
+.menu-content form {
+	text-align:right;
 }
 .menu-content ul li a::before {
     content: "";
     width: 7px;
     height: 7px;
     border-top: solid 2px #ffffff;
-    border-right: solid 2px #ffffff;
+    border-left: solid 2px #ffffff;
     transform: rotate(45deg);
     position: absolute;
-    right: 11px;
+    left: 11px;
     top: 16px;
 }
 #menu-btn-check:checked ~ .menu-content {
-    left: 60%;/*メニューを画面内へ*/
+    right: 80%;/*メニューを画面内へ*/
 }
 .change {
   position: relative;
   display: inline-block;
   font-weight: bold;
   padding: 0.25em 0.5em;
-  margin-left:20px;
+  margin-right:20px;
   text-decoration: none;
   color: #00BCD4;
   background: #ECECEC;
@@ -105,4 +110,98 @@
 .task{
 	text-decoration:none;
 	color:black;
+}
+.balloon2 {
+  position: relative;
+  display: inline-block;
+  margin: 1.5em 0;
+  padding: 7px 10px;
+  min-width: 300px;
+  max-width: 100%;
+  height: 80px;
+  color: black;
+  font-size: 16px;
+  background: #FFF;
+  border: solid 3px #3584bb;
+  box-sizing: border-box;
+}
+
+.balloon2:before {
+  content: "";
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  margin-left: -15px;
+  border: 12px solid transparent;
+  border-top: 12px solid #FFF;
+  z-index: 2;
+}
+
+.balloon2:after {
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  margin-left: -17px;
+  border: 14px solid transparent;
+  border-top: 14px solid #3584bb;
+  z-index: 1;
+}
+
+.balloon2 p {
+  margin: 0;
+  padding: 0;
+  font-size:25px;
+}
+.jouge {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.flex{
+	display:flex;
+	width:800px;
+}
+.block{
+	display:block;
+	width:150px;
+	height:150px;
+}
+.center {
+	text-align:center;
+}
+.right {
+	text-align:right;
+}
+.left {
+	text-align:left;
+}
+.margin-auto {
+	margin-left:auto;
+	margin-right:auto;
+}
+.margin-left {
+	margin-left:50px;
+}
+.btn-circle-3d {
+  display: inline-block;
+  text-decoration: none;
+  background: #ff8181;
+  color: #FFF;
+  width: 90px;
+  height: 90px;
+  line-height: 10px;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  overflow: hidden;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+  border-bottom: solid 3px #bd6565;
+  font-size:300%;
+}
+.btn-circle-3d:active {
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+  border-bottom: none;
 }

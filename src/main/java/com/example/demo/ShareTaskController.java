@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +28,21 @@ public class ShareTaskController {
 	@Autowired
 	ShareTaskRepository shareTaskRepository;
 	
+	@Autowired
+	TaskController taskController;
+	
 	@RequestMapping(value="/shareTask", method=RequestMethod.POST)
 	public ModelAndView sharePage(
 			ModelAndView mv
 			) {
-		mv.addObject("tasks", shareTaskRepository.findShareTaskOrderByCode());
+		List<ShareTask> list = new ArrayList<ShareTask>();
+		list = shareTaskRepository.findShareTaskOrderByCode();
+		for (ShareTask t : list) {
+			Timestamp date = t.getDate();
+			String jisa = taskController.jisa(date);
+			t.setDeadline(jisa);
+		}
+		mv.addObject("tasks", list);
 		mv.setViewName("shareTask");
 		return mv;
 	}
@@ -44,7 +58,14 @@ public class ShareTaskController {
 			case "t":
 				return sharePage(mv);
 			case "s":
-				mv.addObject("tasks", shareTaskRepository.findShareTaskOrderByDate());
+				List<ShareTask> list = new ArrayList<ShareTask>();
+				list = shareTaskRepository.findShareTaskOrderByDate();
+				for (ShareTask t : list) {
+					Timestamp date = t.getDate();
+					String jisa = taskController.jisa(date);
+					t.setDeadline(jisa);
+				}
+				mv.addObject("tasks", list);
 				mv.setViewName("shareTask");
 				return mv;
 			}

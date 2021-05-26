@@ -77,6 +77,10 @@ public class Task {
 	public Task() {
 	}
 
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
 	public Task(Integer accountCode, String task, Timestamp date, Integer categoryCode, String share,
 			String done, String memo) {
 		this.accountCode = accountCode;

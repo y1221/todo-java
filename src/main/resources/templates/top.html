@@ -29,35 +29,30 @@
     </div>
 </header>
 
-<h1>マイタスク</h1>
+<h1 class="center">マイタスク</h1>
 
-<p>
-<span th:text="${session.name}"></span>さんがログイン中
+<p class="right">
+<span th:text="${session.name}"></span>さんがログイン中<br>
 <a href="/logout">ログアウト</a>
 </p>
 
-<form action="/category" method="post">
-<p>
-<select name="category">
-<option value=0>全て</option>
-<option th:each="c:${session.categories}" th:value="${c.code}" th:text="${c.category}" 
-th:selected="${selectCode == c.code}"></option>
-</select>
-<input type="submit" value="カテゴリーを変更">
-</p>
-</form>
+<article class="center">
+
+<div class="flex margin-auto">
+
+<section>
 
 <form action="/add" method="post">
 <p>
-<input type="submit" value="✙">
+<input class="btn-circle-3d" type="submit" value="✙">
 </p>
 </form>
 
 <th:block th:if="${session.category == 0}">
-<h3 th:text="全て"></h3>
+<h3 class="left">カテゴリー：<span th:text="全て" class="left"></span></h3>
 </th:block>
 <th:block th:unless="${session.category == 0}">
-<h3 th:text="${session.selectCategory}"></h3>
+<h3 class="left">カテゴリー：<span th:text="${session.selectCategory}" class="left"></span></h3>
 </th:block>
 
 <form action="/sort" method="post">
@@ -66,7 +61,7 @@ th:selected="${selectCode == c.code}"></option>
 <input type="submit" value="ソート">
 </form>
 
-<table border="1">
+<table border="1" class="margin-auto">
 <tr>
 <th></th><th>タスク</th><th>締め切り</th><th>残り時間</th><th>公開</th>
 </tr>
@@ -78,7 +73,7 @@ th:selected="${selectCode == c.code}"></option>
 </td>
 <td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" class="task"></a></td>
 <td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
-<td>-</td>
+<td th:text="${t.memo}"></td>
 <td>
 <th:block th:if="${t.share.equals('1')}">
 <span th:text="公開中"></span>
@@ -90,13 +85,25 @@ th:selected="${selectCode == c.code}"></option>
 </tr>
 </table>
 
+</section>
+
+<section class="margin-left">
+<div class="balloon2 jouge">
+  <p th:text="${session.talk}"></p>
+</div>
+<img src="/image/cthulhu_deep_ones.png" alt="キャラクター" class="block margin-auto">
+</section>
+
+</div>
+
 <hr>
+
+<section>
 
 <h3>完了したタスク</h3>
 
-<table border="1">
-<tr><th></th><th>タスク</th><th>締め切り</th>
-</tr>
+<table border="1" class="margin-auto">
+<tr><th></th><th>タスク</th><th>締め切り</th></tr>
 <tr th:each="t:${session.doneTasks}">
 <td>
 <form th:action="'/done/' + ${t.code}" method="post">
@@ -107,5 +114,10 @@ th:selected="${selectCode == c.code}"></option>
 <td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
 </tr>
 </table>
+
+</section>
+
+</article>
+
 </body>
 </html>

@@ -40,6 +40,8 @@
 <input type="checkbox" name="share" value="1" th:checked="${share.equals('1')}">公開する
 </p>
 
+<textarea name="memo" rows="4" cols="40" placeholder="メモ" th:text="${memo}"></textarea>
+
 <p>
 <input type="submit" value="戻る" formaction="/back">
 <input type="submit" value="登録" formaction="/doAdd">

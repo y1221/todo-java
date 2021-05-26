@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -48,13 +49,13 @@ public class AccountController {
 			return mv;
 		}
 		
-		List<Account> list = accountRepository.findByLoginIdAndPassword(loginId, password);
-		if (list.size() == 0) {
+		List<Account> accountList = accountRepository.findByLoginIdAndPassword(loginId, password);
+		if (accountList.size() == 0) {
 			mv.addObject("message", "ログインIDまたはパスワードが間違っています");
 			mv.setViewName("login");
 			return mv;
 		}
-		Account account = list.get(0);
+		Account account = accountList.get(0);
 		session.setAttribute("name", account.getName());
 		session.setAttribute("accountCode", account.getCode());
 		session.setAttribute("categories", taskCategoryRepository.findByAccountCode(account.getCode()));
@@ -65,11 +66,18 @@ public class AccountController {
 		String year = dtf.format(ldt);
 		int y = Integer.parseInt(year);
 		int[] years = new int[] {y, y+1, y+2, y+3, y+4};
-
 		session.setAttribute("years", years);
 		
-		session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByCode(account.getCode(), ""));
+		List<Task> list = taskRepository.findByAccountCodeAndDoneOrderByCode(account.getCode(), "");
+		for (Task t : list) {
+			Timestamp date = t.getDate();
+			String jisa = taskController.jisa(date);
+			t.setMemo(jisa);
+		}
+		session.setAttribute("tasks", list);
 		session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(account.getCode(), "1"));
+		
+		taskController.randomTalk();
 		mv.setViewName("top");
 		return mv;
 	}

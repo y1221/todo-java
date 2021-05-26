@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class ShareTask {
@@ -15,6 +16,17 @@ public class ShareTask {
 	private String task;
 	
 	private Timestamp date;
+	
+	@Transient
+	private String deadline;
+
+	public String getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(String deadline) {
+		this.deadline = deadline;
+	}
 
 	public Integer getCode() {
 		return code;

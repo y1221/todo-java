@@ -3,8 +3,13 @@ package com.example.demo;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.servlet.http.HttpSession;
 
@@ -41,23 +46,127 @@ public class TaskController {
 		return mv;
 	}
 	
+	public int[] timestampToInt(Timestamp date) {
+		SimpleDateFormat y = new SimpleDateFormat("yyyy");
+		SimpleDateFormat M = new SimpleDateFormat("MM");
+		SimpleDateFormat d = new SimpleDateFormat("dd");
+		SimpleDateFormat H = new SimpleDateFormat("HH");
+		String strYear = y.format(date);
+		String strMonth = M.format(date);
+		String strDay = d.format(date);
+		String strHour = H.format(date);
+		int year = Integer.parseInt(strYear);
+		int month = Integer.parseInt(strMonth);
+		int day = Integer.parseInt(strDay);
+		int hour = Integer.parseInt(strHour);
+		int[] dates = new int[] {year, month, day, hour};
+		return dates;
+	}
+	
+	public String jisa(Timestamp date) {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime deadline = date.toLocalDateTime();
+		long jisaDay = ChronoUnit.DAYS.between(now, deadline);
+		long jisaHour = ChronoUnit.HOURS.between(now, deadline);
+		long hour = jisaHour - jisaDay * 24;
+		StringBuilder sb = new StringBuilder();
+		sb.append(jisaDay);
+		sb.append("日 ");
+		sb.append(hour);
+		sb.append("時間");
+		String jisa = sb.toString();
+		return jisa;
+	}
+	
+	public void randomTalk() {
+		Random random = new Random();
+		int r = random.nextInt(5);
+		switch (r) {
+		case 0:
+			session.setAttribute("talk", "今日も頑張ろう！");
+			break;
+		case 1:
+			session.setAttribute("talk", "締め切りを守ることが大事！");
+			break;
+		case 2:
+			session.setAttribute("talk", "余裕を持って取り組もう！");
+			break;
+		case 3:
+			session.setAttribute("talk", "タスクを共有して責任感を持とう！");
+			break;
+		case 4:
+			session.setAttribute("talk", "みんなのタスクを確認してモチベーションを上げよう！");
+			break;
+		}
+	}
+	
+	public void addTaskTalk(String task, String deadline) {
+		Random random = new Random();
+		int r = random.nextInt(2);
+		switch (r) {
+		case 0:
+			session.setAttribute("talk", task + "を登録したよ！" + deadline + "までだね！頑張ろう！");
+			break;
+		case 1:
+			session.setAttribute("talk", task + "だね！" + deadline + "より早く終わらせることを意識しよう！");
+			break;
+		}
+	}
+	
+	public void doneTaskTalk(String task) {
+		Random random = new Random();
+		int r = random.nextInt(3);
+		switch (r) {
+		case 0:
+			session.setAttribute("talk", "すごい！" + task + "を終わらせたんだね！");
+			break;
+		case 1:
+			session.setAttribute("talk", task + "が終わったね！おめでとう！");
+			break;
+		case 2:
+			session.setAttribute("talk", task + "が終わったんだ！よく頑張ったね！");
+			break;
+		}
+	}
+	
 	@RequestMapping("/back")
+	public ModelAndView back(
+			ModelAndView mv
+			) {
+		randomTalk();
+		return topPage(mv);
+	}
+	
 	public ModelAndView topPage(
 			ModelAndView mv
 			) {
 		int accountCode = accountCode();
 		String sort = (String)session.getAttribute("sort");
 		int categoryCode = (int)session.getAttribute("category");
-
+		
+		List<Task> list = new ArrayList<Task>();
+		
 		if (categoryCode == 0) {
 			switch (sort) {
 			case "t":
-				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, ""));
+				list = taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "");
+				for (Task t : list) {
+					Timestamp date = t.getDate();
+					String jisa = jisa(date);
+					t.setMemo(jisa);
+				}
+				session.setAttribute("tasks", list);
 				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
 				mv.setViewName("top");
 				return mv;
 			case "s":
-				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByDate(accountCode, ""));
+				list = taskRepository.findByAccountCodeAndDoneOrderByDate(accountCode, "");
+				for (Task t : list) {
+					Timestamp date = t.getDate();
+					String jisa = jisa(date);
+					t.setMemo(jisa);
+				}
+				session.setAttribute("tasks", list);
 				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
 				mv.setViewName("top");
 				return mv;
@@ -65,12 +174,24 @@ public class TaskController {
 		} else {
 			switch (sort) {
 			case "t":
-				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "", categoryCode));
+				list = taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "", categoryCode);
+				for (Task t : list) {
+					Timestamp date = t.getDate();
+					String jisa = jisa(date);
+					t.setMemo(jisa);
+				}
+				session.setAttribute("tasks", list);
 				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
 				mv.setViewName("top");
 				return mv;
 			case "s":
-				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByDate(accountCode, "", categoryCode));
+				list = taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByDate(accountCode, "", categoryCode);
+				for (Task t : list) {
+					Timestamp date = t.getDate();
+					String jisa = jisa(date);
+					t.setMemo(jisa);
+				}
+				session.setAttribute("tasks", list);
 				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
 				mv.setViewName("top");
 				return mv;
@@ -84,12 +205,22 @@ public class TaskController {
 			ModelAndView mv
 			) {
 		String task = "";
-		int year = 0;
-		int month = 0;
-		int day = 0;
-		int hour = 0;
+		LocalDateTime ldt = LocalDateTime.now();
+		DateTimeFormatter y = DateTimeFormatter.ofPattern("yyyy");
+		DateTimeFormatter m = DateTimeFormatter.ofPattern("MM");
+		DateTimeFormatter d = DateTimeFormatter.ofPattern("dd");
+		DateTimeFormatter h = DateTimeFormatter.ofPattern("HH");
+		String strYear = y.format(ldt);
+		String strMonth = m.format(ldt);
+		String strDay = d.format(ldt);
+		String strHour = h.format(ldt);
+		int year = Integer.parseInt(strYear);
+		int month = Integer.parseInt(strMonth);
+		int day = Integer.parseInt(strDay);
+		int hour = Integer.parseInt(strHour);
 		int categoryCode = 0;
 		String share = "";
+		String memo = "";
 		mv.addObject("task", task);
 		mv.addObject("year", year);
 		mv.addObject("month", month);
@@ -97,6 +228,7 @@ public class TaskController {
 		mv.addObject("hour", hour);
 		mv.addObject("categoryCode", categoryCode);
 		mv.addObject("share", share);
+		mv.addObject("memo", memo);
 		mv.setViewName("add");
 		return mv;
 	}
@@ -110,9 +242,25 @@ public class TaskController {
 			@RequestParam(name="hour", defaultValue="") String hour,
 			@RequestParam("category") int categoryCode,
 			@RequestParam(name="share", defaultValue="") String share,
+			@RequestParam(name="memo", defaultValue="") String memo,
 			ModelAndView mv
 			) {
 		if (task.length() == 0) {
+			int y = Integer.parseInt(year);
+			int m = Integer.parseInt(month);
+			int d = Integer.parseInt(day);
+			int h = 0;
+			if (hour.length() != 0) {
+				h = Integer.parseInt(hour);
+			}
+			mv.addObject("task", task);
+			mv.addObject("categoryCode", categoryCode);
+			mv.addObject("share", share);
+			mv.addObject("memo", memo);
+			mv.addObject("year", y);
+			mv.addObject("month", m);
+			mv.addObject("day", d);
+			mv.addObject("hour", h);
 			mv.addObject("message", "タスクを入力してください");
 			mv.setViewName("add");
 			return addPage(mv);
@@ -120,7 +268,6 @@ public class TaskController {
 		int accountCode = accountCode();
 		
 		String done = "";
-		String memo = "";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(year);
@@ -142,8 +289,12 @@ public class TaskController {
 
 			Task t = new Task(accountCode, task, date, 
 					categoryCode, share, done, memo);
-			
 			taskRepository.saveAndFlush(t);
+//			session.setAttribute("category", categoryCode);
+			SimpleDateFormat s = new SimpleDateFormat("MM/dd HH");
+			String a = s.format(date);
+			String deadline = a + "時";
+			addTaskTalk(task, deadline);
 			return topPage(mv);
 		} else {
 			sb.append(" ");
@@ -162,6 +313,11 @@ public class TaskController {
 					categoryCode, share, done, memo);
 			
 			taskRepository.saveAndFlush(t);
+//			session.setAttribute("category", categoryCode);
+			SimpleDateFormat s = new SimpleDateFormat("MM/dd HH");
+			String a = s.format(date);
+			String deadline = a + "時";
+			addTaskTalk(task, deadline);
 			return topPage(mv);
 		}
 	}
@@ -248,34 +404,11 @@ public class TaskController {
 		}
 	}
 	
-//	@RequestMapping(value="/category", method=RequestMethod.POST)
-//	public ModelAndView category(
-//			@RequestParam("category") int categoryCode,
-//			ModelAndView mv
-//			) {
-//		int accountCode = accountCode();
-//		session.setAttribute("category", categoryCode);
-//
-//		if (categoryCode == 0) {
-//			session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, ""));
-//			session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//			mv.setViewName("top");
-//			return mv;
-//		} else {
-//			session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "", categoryCode));
-//			mv.addObject("selectCode", categoryCode);
-//			session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//			mv.setViewName("top");
-//			return mv;
-//		}
-//	}
-	
 	@RequestMapping(value="/category/{code}", method=RequestMethod.GET)
 	public ModelAndView category(
 			@PathVariable("code") int categoryCode,
 			ModelAndView mv
 			) {
-//		int accountCode = accountCode();
 		session.setAttribute("category", categoryCode);
 		if (categoryCode != 0) {
 			Optional<TaskCategory> task = taskCategoryRepository.findById(categoryCode);
@@ -287,23 +420,6 @@ public class TaskController {
 			}
 		}
 		return topPage(mv);
-
-//		if (categoryCode == 0) {
-//			session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, ""));
-//			session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//			mv.setViewName("top");
-//			return mv;
-//		} else {
-//			session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "", categoryCode));
-//			Optional<TaskCategory> task = taskCategoryRepository.findById(categoryCode);
-//			if (task.isPresent()) {
-//				TaskCategory t = task.get();
-//				session.setAttribute("selectCategory", t.getCategory());
-//			}
-//			session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//			mv.setViewName("top");
-//			return mv;
-//		}
 	}
 	
 	@RequestMapping(value="/sort", method=RequestMethod.POST)
@@ -311,35 +427,8 @@ public class TaskController {
 			@RequestParam("sort") String sort,
 			ModelAndView mv
 			) {
-//		int categoryCode = (int) session.getAttribute("category");
-//		int accountCode = accountCode();
 		session.setAttribute("sort", sort);
 		return topPage(mv);
-
-//		if (categoryCode == 0) {
-//			switch (sort) {
-//			case "t":
-//				return topPage(mv);
-//			case "s":
-//				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneOrderByDate(accountCode, ""));
-//				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//				mv.setViewName("top");
-//				return mv;
-//			}
-//		} else {
-//			switch (sort) {
-//			case "t":
-//				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "", categoryCode));
-//				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//				mv.setViewName("top");
-//				return mv;
-//			case "s":
-//				session.setAttribute("tasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByDate(accountCode, "", categoryCode));
-//				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
-//				mv.setViewName("top");
-//				return mv;
-//			}
-//		}
 	}
 	
 	@RequestMapping(value="/edit/{code}", method=RequestMethod.GET)
@@ -350,34 +439,23 @@ public class TaskController {
 		Optional<Task> task = taskRepository.findById(code);
 		if (task.isPresent()) {
 			Task editTask = task.get();
-			mv.addObject("code", editTask.getCode());
+			session.setAttribute("editCode", editTask.getCode());
 			mv.addObject("task", editTask.getTask());
 			mv.addObject("categoryCode", editTask.getCategoryCode());
 			mv.addObject("share", editTask.getShare());
 			mv.addObject("memo", editTask.getMemo());
+			session.setAttribute("editDone", editTask.getDone());
 			Timestamp date = editTask.getDate();
-			SimpleDateFormat y = new SimpleDateFormat("yyyy");
-			SimpleDateFormat M = new SimpleDateFormat("MM");
-			SimpleDateFormat d = new SimpleDateFormat("dd");
-			SimpleDateFormat H = new SimpleDateFormat("HH");
-			String strYear = y.format(date);
-			String strMonth = M.format(date);
-			String strDay = d.format(date);
-			String strHour = H.format(date);
-			int year = Integer.parseInt(strYear);
-			int month = Integer.parseInt(strMonth);
-			int day = Integer.parseInt(strDay);
-			int hour = Integer.parseInt(strHour);
-			mv.addObject("year", year);
-			mv.addObject("month", month);
-			mv.addObject("day", day);
-			mv.addObject("hour", hour);
+			int[] dates = timestampToInt(date);
+			mv.addObject("year", dates[0]);
+			mv.addObject("month", dates[1]);
+			mv.addObject("day", dates[2]);
+			mv.addObject("hour", dates[3]);
 			mv.setViewName("edit");
 			return mv;
 		} else {
 			return error(mv);
 		}
-		
 	}
 	
 	@RequestMapping(value="/update/{code}", method=RequestMethod.POST)
@@ -394,13 +472,26 @@ public class TaskController {
 			ModelAndView mv
 			) {
 		if (task.length() == 0) {
+			int y = Integer.parseInt(year);
+			int m = Integer.parseInt(month);
+			int d = Integer.parseInt(day);
+			int h = 0;
+			if (hour.length() != 0) {
+				h = Integer.parseInt(hour);
+			}
 			mv.addObject("message", "タスクを入力してください");
-			mv.setViewName("add");
-			return addPage(mv);
+			mv.addObject("task", task);
+			mv.addObject("categoryCode", categoryCode);
+			mv.addObject("share", share);
+			mv.addObject("memo", memo);
+			mv.addObject("year", y);
+			mv.addObject("month", m);
+			mv.addObject("day", d);
+			mv.addObject("hour", h);
+			mv.setViewName("edit");
+			return mv;
 		}
 		int accountCode = accountCode();
-		
-		String done = "";
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(year);
@@ -408,6 +499,8 @@ public class TaskController {
 		sb.append(month);
 		sb.append("-");
 		sb.append(day);
+		
+		String done = (String)session.getAttribute("editDone");
 		
 		if (hour.equals("時")) {
 			String str = sb.toString();
@@ -424,6 +517,7 @@ public class TaskController {
 					categoryCode, share, done, memo);
 			
 			taskRepository.saveAndFlush(t);
+//			session.setAttribute("category", categoryCode);
 			return topPage(mv);
 		} else {
 			sb.append(" ");
@@ -442,6 +536,7 @@ public class TaskController {
 					categoryCode, share, done, memo);
 			
 			taskRepository.saveAndFlush(t);
+//			session.setAttribute("category", categoryCode);
 			return topPage(mv);
 		}
 	}
@@ -466,8 +561,10 @@ public class TaskController {
 			String done = doneTask.getDone();
 			if (done.length() == 0) {
 				done = "1";
+				doneTaskTalk(doneTask.getTask());
 			} else {
 				done = "";
+				randomTalk();
 			}
 			Task t = new Task(code, doneTask.getAccountCode(), doneTask.getTask(), doneTask.getDate(), 
 					doneTask.getCategoryCode(), doneTask.getShare(), done, doneTask.getMemo());
