@@ -145,7 +145,6 @@ public class TaskController {
 		int categoryCode = (int)session.getAttribute("category");
 		
 		List<Task> list = new ArrayList<Task>();
-		
 		if (categoryCode == 0) {
 			switch (sort) {
 			case "t":
@@ -240,11 +239,17 @@ public class TaskController {
 			@RequestParam("month") String month,
 			@RequestParam("day") String day,
 			@RequestParam(name="hour", defaultValue="") String hour,
-			@RequestParam("category") int categoryCode,
+			@RequestParam(name="category", defaultValue="") String strCategoryCode,
 			@RequestParam(name="share", defaultValue="") String share,
 			@RequestParam(name="memo", defaultValue="") String memo,
 			ModelAndView mv
 			) {
+		int categoryCode = 0;
+		if (strCategoryCode.length() == 0) {
+			categoryCode = 0;
+		} else {
+			categoryCode = Integer.parseInt(strCategoryCode);
+		}
 		if (task.length() == 0) {
 			int y = Integer.parseInt(year);
 			int m = Integer.parseInt(month);
@@ -286,15 +291,39 @@ public class TaskController {
 				e.printStackTrace();
 			}
 			Timestamp date = new java.sql.Timestamp(parsedDate.getTime());
-
+			
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime deadline = date.toLocalDateTime();
+			long jisa = ChronoUnit.DAYS.between(now, deadline);
+			if(jisa < 0) {
+				int y = Integer.parseInt(year);
+				int m = Integer.parseInt(month);
+				int d = Integer.parseInt(day);
+				int h = 0;
+				if (hour.length() != 0) {
+					h = Integer.parseInt(hour);
+				}
+				mv.addObject("task", task);
+				mv.addObject("categoryCode", categoryCode);
+				mv.addObject("share", share);
+				mv.addObject("memo", memo);
+				mv.addObject("year", y);
+				mv.addObject("month", m);
+				mv.addObject("day", d);
+				mv.addObject("hour", h);
+				mv.addObject("message", "過去の日時は締め切りに設定できません");
+				mv.setViewName("add");
+				return addPage(mv);
+			}
+			
 			Task t = new Task(accountCode, task, date, 
 					categoryCode, share, done, memo);
 			taskRepository.saveAndFlush(t);
 //			session.setAttribute("category", categoryCode);
 			SimpleDateFormat s = new SimpleDateFormat("MM/dd HH");
 			String a = s.format(date);
-			String deadline = a + "時";
-			addTaskTalk(task, deadline);
+			String dead = a + "時";
+			addTaskTalk(task, dead);
 			return topPage(mv);
 		} else {
 			sb.append(" ");
@@ -308,7 +337,31 @@ public class TaskController {
 				e.printStackTrace();
 			}
 			Timestamp date = new java.sql.Timestamp(parsedDate.getTime());
-
+			
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime deadline = date.toLocalDateTime();
+			long jisa = ChronoUnit.HOURS.between(now, deadline);
+			if(jisa < 0) {
+				int y = Integer.parseInt(year);
+				int m = Integer.parseInt(month);
+				int d = Integer.parseInt(day);
+				int h = 0;
+				if (hour.length() != 0) {
+					h = Integer.parseInt(hour);
+				}
+				mv.addObject("task", task);
+				mv.addObject("categoryCode", categoryCode);
+				mv.addObject("share", share);
+				mv.addObject("memo", memo);
+				mv.addObject("year", y);
+				mv.addObject("month", m);
+				mv.addObject("day", d);
+				mv.addObject("hour", h);
+				mv.addObject("message", "過去の日時は締め切りに設定できません");
+				mv.setViewName("add");
+				return addPage(mv);
+			}
+			
 			Task t = new Task(accountCode, task, date, 
 					categoryCode, share, done, memo);
 			
@@ -316,8 +369,8 @@ public class TaskController {
 //			session.setAttribute("category", categoryCode);
 			SimpleDateFormat s = new SimpleDateFormat("MM/dd HH");
 			String a = s.format(date);
-			String deadline = a + "時";
-			addTaskTalk(task, deadline);
+			String dead = a + "時";
+			addTaskTalk(task, dead);
 			return topPage(mv);
 		}
 	}
@@ -329,7 +382,7 @@ public class TaskController {
 			@RequestParam("month") int month,
 			@RequestParam("day") int day,
 			@RequestParam(name="hour", defaultValue="") String strHour,
-			@RequestParam("category") int categoryCode,
+			@RequestParam(name="category", defaultValue="") String strCategoryCode,
 			@RequestParam(name="share", defaultValue="") String share,
 			@RequestParam(name="memo", defaultValue="") String memo,
 			@RequestParam("before") String before,
@@ -346,6 +399,12 @@ public class TaskController {
 			hour = Integer.parseInt(strHour);
 		}
 		session.setAttribute("reHour", hour);
+		int categoryCode = 0;
+		if (strCategoryCode.length() == 0) {
+			categoryCode = 0;
+		} else {
+			categoryCode = Integer.parseInt(strCategoryCode);
+		}
 		session.setAttribute("reCategoryCode", categoryCode);
 		session.setAttribute("reShare", share);
 		session.setAttribute("reMemo", memo);

@@ -60,6 +60,7 @@ public class AccountController {
 		session.setAttribute("accountCode", account.getCode());
 		session.setAttribute("categories", taskCategoryRepository.findByAccountCode(account.getCode()));
 		session.setAttribute("sort", "t");
+		session.setAttribute("sortShare", "t");
 		session.setAttribute("category", 0);
 		LocalDateTime ldt = LocalDateTime.now();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");

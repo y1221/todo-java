@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>トップ</title>
+<link th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}" rel="stylesheet" />
 <link th:href="@{/todo.css}" rel="stylesheet" type="text/css">
+<title>トップ</title>
 </head>
 <body>
 <header>
@@ -58,17 +59,17 @@
 <form action="/sort" method="post">
 <input type="radio" name="sort" value="t" th:checked="${session.sort.equals('t')}">登録順
 <input type="radio" name="sort" value="s" th:checked="${session.sort.equals('s')}">締め切り順
-<input type="submit" value="ソート">
+<input type="submit" class="btn-primary" value="ソート">
 </form>
 
-<table border="1" class="margin-auto">
+<table border="1" class="margin-auto task-table white">
 <tr>
 <th></th><th>タスク</th><th>締め切り</th><th>残り時間</th><th>公開</th>
 </tr>
 <tr th:each="t:${session.tasks}">
 <td>
 <form th:action="'/done/' + ${t.code}" method="post">
-<input type="submit" value="完了">
+<input type="submit" class="btn btn-primary" value="完了">
 </form>
 </td>
 <td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" class="task"></a></td>
@@ -87,11 +88,13 @@
 
 </section>
 
-<section class="margin-left">
+<section class="margin-left margin-top">
+<div class="wrapper">
 <div class="balloon2 jouge">
   <p th:text="${session.talk}"></p>
 </div>
 <img src="/image/cthulhu_deep_ones.png" alt="キャラクター" class="block margin-auto">
+</div>
 </section>
 
 </div>
@@ -102,12 +105,12 @@
 
 <h3>完了したタスク</h3>
 
-<table border="1" class="margin-auto">
+<table border="1" class="margin-auto donetask-table white">
 <tr><th></th><th>タスク</th><th>締め切り</th></tr>
 <tr th:each="t:${session.doneTasks}">
 <td>
 <form th:action="'/done/' + ${t.code}" method="post">
-<input type="submit" value="未完了">
+<input type="submit" class="btn btn-primary" value="未完了">
 </form>
 </td>
 <td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" class="task"></a></td>
@@ -119,5 +122,7 @@
 
 </article>
 
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
 </body>
 </html>

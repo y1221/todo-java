@@ -2,12 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/form.css}" rel="stylesheet" type="text/css">
 <title>カテゴリー登録</title>
 </head>
 <body>
 
 <h1>カテゴリー登録</h1>
 
+<form class="center" method="post">
+  <input type="hidden" name="code" value="${code}">
+
+  <div class="form-group center flex category">
+    <input type="text" name="category" placeholder="カテゴリーを入力" class="form-control input" id="exampleInputEmail1" aria-describedby="emailHelp">
+  </div>
+  <p th:text="${message}" class="error-msg"></p>
+  <p>
+  <input type="submit" class="btn btn-primary" value="戻る" formaction="/backCategoryPage">
+  <input type="submit" class="btn btn-primary" value="登録" formaction="/doAddCategory">
+  </p>
+</form>
+
+<!-- <div class="jouge">
 <form method="post">
 
 <input type="hidden" name="code" value="${code}">
@@ -16,12 +32,15 @@
 
 <p th:text="${message}" style=color:red;></p>
 
-<p>
-<input type="submit" value="戻る" formaction="/backCategoryPage">
-<input type="submit" value="登録" formaction="/doAddCategory">
+<p class="flex">
+<input class ="submit" type="submit" value="戻る" formaction="/backCategoryPage">
+<input class ="submit" type="submit" value="登録" formaction="/doAddCategory">
 </p>
 
 </form>
+</div> -->
 
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
 </body>
 </html>

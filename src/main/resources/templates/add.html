@@ -2,12 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/form.css}" rel="stylesheet" type="text/css">
 <title>タスク登録</title>
 </head>
 <body>
 
 <h1>タスク登録</h1>
 
+<form method="post">
+  <div class="form-group center flex category">
+    <input type="text" name="task" placeholder="タスクを入力" th:value="${task}" class="form-control task-input" id="exampleInputEmail1" aria-describedby="emailHelp">
+  </div>
+  <div class="form-row flex center simekiri">
+  <p>締め切り</p>
+    <div class="form-group margin-left">
+      <select name="year" id="inputState" class="form-control">
+      <option th:each="y:${session.years}" th:value="${y}" th:text="${y} + '年'" th:selected="${year == y}"></option>
+	  </select>
+    </div>
+    <div class="form-group margin-left">
+      <select name="month" id="inputState" class="form-control">
+      <option th:each="i:${#numbers.sequence(1, 12)}" th:value="${i}" th:text="${i} + '月'" th:selected="${month == i}"></option>
+	  </select>
+    </div>
+    <div class="form-group margin-left">
+      <select name="day" id="inputState" class="form-control">
+	  <option th:each="i:${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i} + '日'" th:selected="${day == i}"></option>	  </select>
+    </div>
+    <div class="form-group margin-left">
+      <select name="hour" id="inputState" class="form-control">
+      <option>時</option>
+      <option th:each="i:${#numbers.sequence(1, 24)}" th:value="${i}" th:text="${i} + '時'" th:selected="${hour == i}"></option>
+	  </select>
+    </div>
+  </div>
+  <div class="form-row flex center simekiri">
+  <p>カテゴリー</p>
+	  <div class="form-group margin-left">
+	      <select name="category" id="inputState" class="form-control">
+	      <option th:each="c:${session.categories}" th:value="${c.code}" th:text="${c.category}" th:selected="${categoryCode == c.code}"></option>
+		  </select>
+	  </div>
+	  <input type="hidden" name="before" value="add">
+	  <div class="form-group margin-left">
+	  <input class="btn btn-primary" type="submit" value="カテゴリーを追加" formaction="/addCategory">
+	  </div>
+  </div>
+  <div class="form-group center simekiri">
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" name="share" value="1" th:checked="${share.equals('1')}" id="gridCheck">
+      <label class="form-check-label" for="gridCheck">
+        	公開する
+      </label>
+    </div>
+  </div>
+  <p class="flex center simekiri m-left">
+	<input class ="btn btn-primary" type="submit" value="戻る" formaction="/back">
+	<input class ="btn btn-primary margin-left" type="submit" value="登録" formaction="/doAdd">
+	</p>
+</form>
+
+<p th:text="${message}" class="error-msg"></p>
+
+<!-- 
+<div class="jouge">
 <form method="post">
 
 <h3>
@@ -34,7 +93,7 @@
 </select>
 
 <input type="hidden" name="before" value="add">
-<input type="submit" value="カテゴリーを追加" formaction="/addCategory">
+<input class ="category-submit" type="submit" value="カテゴリーを追加" formaction="/addCategory">
 
 <p>
 <input type="checkbox" name="share" value="1" th:checked="${share.equals('1')}">公開する
@@ -42,14 +101,17 @@
 
 <textarea name="memo" rows="4" cols="40" placeholder="メモ" th:text="${memo}"></textarea>
 
-<p>
-<input type="submit" value="戻る" formaction="/back">
-<input type="submit" value="登録" formaction="/doAdd">
+<p class="flex">
+<input class ="submit" type="submit" value="戻る" formaction="/back">
+<input class ="submit" type="submit" value="登録" formaction="/doAdd">
 </p>
 
 </form>
 
 <p th:text="${message}" style=color:red;></p>
+</div> -->
 
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
 </body>
 </html>

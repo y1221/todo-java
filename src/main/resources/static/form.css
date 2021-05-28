@@ -1,0 +1,103 @@
+@charset "UTF-8";
+body {
+	margin: 0;
+	background-image: url("/image/bg.png");
+	background-repeat: repeat;
+}
+.jouge {
+  margin-left: auto;
+  margin-right: auto;
+  justify-content:center;
+  align-items:center;
+  margin-top: 20px;
+  width: 279px;
+}
+h1 {
+	margin-top: 160px;
+	text-align: center;
+}
+h3 {
+	margin-top: 20px;
+	text-align: center;
+}
+.size-three {
+	width: 300px;
+	height: 200px;
+}
+.font-two {
+	font-size: 150%;
+}
+.submit{
+	color: #3584bb;
+	width: 80px;
+	height: 40px;
+	margin: 20px;
+	font-size: 100%;
+	text-align: center;
+}
+.category-submit{
+	color: #3584bb;
+	width: 140px;
+	height: 40px;
+	margin: 20px;
+	font-size: 100%;
+	text-align: center;
+}
+.white{
+	background: #FFF;
+}
+.flex{
+	display: flex;
+}
+.center{
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+.margin-left{
+	margin-left:20px;
+}
+.margin-top{
+	margin-top:50px;
+}
+.m-left{
+	margin-left:600px;
+}
+.confirm-msg{
+	text-align: center;
+	color: blue;
+}
+.error-msg{
+	text-align: center;
+	color: red;
+}
+.four{
+	width:30%;
+}
+.label{
+	width:100px;
+}
+.input{
+	width:200px;
+}
+.task-input{
+	width:350px;
+}
+.form{
+	width:300px;
+}
+.category{
+	width:200px;
+}
+.simekiri{
+	width:510px;
+}
+.margin-zero{
+	margin:0;
+}
+.add-category{
+	width:400px;
+}
+.bottun{
+	width:130px;
+}

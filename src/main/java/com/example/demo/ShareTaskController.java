@@ -35,15 +35,30 @@ public class ShareTaskController {
 	public ModelAndView sharePage(
 			ModelAndView mv
 			) {
+		String sort = (String)session.getAttribute("sortShare");
 		List<ShareTask> list = new ArrayList<ShareTask>();
-		list = shareTaskRepository.findShareTaskOrderByCode();
-		for (ShareTask t : list) {
-			Timestamp date = t.getDate();
-			String jisa = taskController.jisa(date);
-			t.setDeadline(jisa);
+		switch (sort) {
+		case "t":
+			list = shareTaskRepository.findShareTaskOrderByCode();
+			for (ShareTask t : list) {
+				Timestamp date = t.getDate();
+				String jisa = taskController.jisa(date);
+				t.setDeadline(jisa);
+			}
+			mv.addObject("tasks", list);
+			mv.setViewName("shareTask");
+			return mv;
+		case "s":
+			list = shareTaskRepository.findShareTaskOrderByDate();
+			for (ShareTask t : list) {
+				Timestamp date = t.getDate();
+				String jisa = taskController.jisa(date);
+				t.setDeadline(jisa);
+			}
+			mv.addObject("tasks", list);
+			mv.setViewName("shareTask");
+			return mv;
 		}
-		mv.addObject("tasks", list);
-		mv.setViewName("shareTask");
 		return mv;
 	}
 	
@@ -52,24 +67,8 @@ public class ShareTaskController {
 			@RequestParam("sort") String sort,
 			ModelAndView mv
 			) {
-		session.setAttribute("sort", sort);
-		
-			switch (sort) {
-			case "t":
-				return sharePage(mv);
-			case "s":
-				List<ShareTask> list = new ArrayList<ShareTask>();
-				list = shareTaskRepository.findShareTaskOrderByDate();
-				for (ShareTask t : list) {
-					Timestamp date = t.getDate();
-					String jisa = taskController.jisa(date);
-					t.setDeadline(jisa);
-				}
-				mv.addObject("tasks", list);
-				mv.setViewName("shareTask");
-				return mv;
-			}
-		return mv;
+		session.setAttribute("sortShare", sort);
+		return sharePage(mv);
 	}
 
 }

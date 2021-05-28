@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}" rel="stylesheet" />
 <title>share</title>
 <link th:href="@{todo.css}" rel="stylesheet" type="text/css">
 </head>
@@ -29,21 +30,21 @@
     </div>
 </header>
 
-<h1 class="center">みんなのタスク</h1>
+<h1 class="center blue">みんなのタスク</h1>
 
 <p class="right">
-<span th:text="${session.name}"></span>さんがログイン中
+<span th:text="${session.name}"></span>さんがログイン中<br>
 <a href="/logout">ログアウト</a>
 </p>
 
 <div class="center">
 <form action="/sortShare" method="post">
-<input type="radio" name="sort" value="t" th:checked="${session.sort.equals('t')}">登録順
-<input type="radio" name="sort" value="s" th:checked="${session.sort.equals('s')}">締め切り順
-<input type="submit" value="ソート">
+<input type="radio" name="sort" value="t" th:checked="${session.sortShare.equals('t')}">登録順
+<input type="radio" name="sort" value="s" th:checked="${session.sortShare.equals('s')}">締め切り順
+<input type="submit" class="btn-primary" value="ソート">
 </form>
 
-<table border="1" class="margin-auto">
+<table border="1" class="margin-auto sharetask-table white">
 <tr>
 <th>名前</th><th>タスク</th><th>締め切り</th><th>残り時間</th>
 </tr>
@@ -55,6 +56,7 @@
 </tr>
 </table>
 </div>
-
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
 </body>
 </html>
