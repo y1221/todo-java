@@ -49,6 +49,9 @@
 	  <input class="btn btn-primary" type="submit" value="カテゴリーを追加" formaction="/addCategory">
 	  </div>
   </div>
+  <div class="form-group center flex category">
+  <textarea name="memo" rows="4" cols="60" placeholder="メモ" th:text="${memo}"></textarea>
+  </div>
   <div class="form-group center simekiri">
     <div class="form-check">
       <input type="checkbox" class="form-check-input" name="share" value="1" th:checked="${share.equals('1')}" id="gridCheck">

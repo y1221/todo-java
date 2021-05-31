@@ -226,6 +226,9 @@ h1 {
 .margin-top{
 	margin-top:50px;
 }
+.margin-bottom{
+	margin-bottom:50px;
+}
 .btn-circle-3d {
   display: inline-block;
   text-decoration: none;

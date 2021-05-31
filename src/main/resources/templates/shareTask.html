@@ -50,7 +50,7 @@
 </tr>
 <tr th:each="t:${tasks}">
 <td th:text="${t.name}"></td>
-<td><a th:href="'/edit/' + ${t.code}" th:text="${t.task}" style="text-decoration:none; color:black"></a></td>
+<td th:text="${t.task}"></td>
 <td th:text="${#dates.format(t.date, 'MM/dd HH') + '時'}"></td>
 <td th:text="${t.deadline}"></td>
 </tr>

@@ -166,7 +166,7 @@ public class TaskController {
 					t.setMemo(jisa);
 				}
 				session.setAttribute("tasks", list);
-				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
+				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByDate(accountCode, "1"));
 				mv.setViewName("top");
 				return mv;
 			}
@@ -180,7 +180,7 @@ public class TaskController {
 					t.setMemo(jisa);
 				}
 				session.setAttribute("tasks", list);
-				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
+				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByCode(accountCode, "1", categoryCode));
 				mv.setViewName("top");
 				return mv;
 			case "s":
@@ -191,7 +191,7 @@ public class TaskController {
 					t.setMemo(jisa);
 				}
 				session.setAttribute("tasks", list);
-				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneOrderByCode(accountCode, "1"));
+				session.setAttribute("doneTasks", taskRepository.findByAccountCodeAndDoneAndCategoryCodeOrderByDate(accountCode, "1", categoryCode));
 				mv.setViewName("top");
 				return mv;
 			}
